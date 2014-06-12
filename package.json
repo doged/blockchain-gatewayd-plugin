@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "superagent": "^0.18.0",
-    "nconf": "^0.6.9"
+    "nconf": "^0.6.9",
+    "underscore-node": "^0.1.2"
   }
 }
