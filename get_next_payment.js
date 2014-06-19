@@ -1,6 +1,7 @@
 var request = require('superagent');
 var _ = require('underscore-node');
 var config = require(__dirname+'/config/config.js');
+var EventEmitter = require('events').EventEmitter;
 
 if (process.env.NODE_ENV != 'production') {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
@@ -37,13 +38,15 @@ function listNextBlock(lastBlock, callback) {
   });
 }
 
+var emitter = new EventEmitter();
+
 function pollForPayments(callback){
   listNextBlock(config.get('lastBlockHash'), function(error, transactions){
     if (error) {
       callback(callback);
     } else if (transactions && transactions.length > 0) {
       if (transactions[0].blockhash) {
-        console.log('NEW BLOCK WITH TRANSACTIONS!', transactions);
+        emitter.emit('block', transactions);
         config.set('lastBlockHash', transactions[0].blockhash);
         config.save();
       }
@@ -53,6 +56,40 @@ function pollForPayments(callback){
     }
   });
 }
+
+emitter.on('block', function(transactions){
+  console.log('NEW BLOCK WITH TRANSACTIONS!');
+  transactions.forEach(function(transaction) {
+    request
+      .get(config.get('gatewaydDomain')+'/v1/external_accounts?name='+transaction.address)
+      .auth(config.get('adminEmail'), config.get('apiKey'))
+      .end(function(error, response) {
+        if (error) {
+          return console.log('error', error);
+        } else if (response.body.external_accounts && response.body.external_accounts.length > 0){
+          var externalAccount = response.body.external_accounts[0];
+          request
+            .post(config.get('gatewaydDomain')+'/v1/deposits')
+            .auth(config.get('adminEmail'), config.get('apiKey'))
+            .send({
+              external_account_id: externalAccount.id,
+              currency: 'DOG',
+              amount: transaction.amount
+            })
+            .end(function(error, response) {
+              if (error) {
+                return console.log('error', error);
+              } else {
+                console.log(response.body);
+              }
+            });
+        } else {
+          console.log('no account found');
+        }
+      });
+    console.log(transaction);
+  });  
+});
 
 pollForPayments(pollForPayments);
 
