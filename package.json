@@ -1,6 +1,6 @@
 {
-  "name": "dogecoin_processes",
-  "version": "0.0.0",
+  "name": "dogecoin-gatewayd-plugin",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,8 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "superagent": "^0.18.0",
+    "async": "^0.9.0",
     "nconf": "^0.6.9",
+    "sql-mq-worker": "^1.0.1",
+    "superagent": "^0.18.0",
     "underscore-node": "^0.1.2"
   }
 }
