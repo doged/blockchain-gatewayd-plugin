@@ -31,5 +31,10 @@
   "bugs": {
     "url": "https://github.com/stevenzeiler/dogecoin-gatewayd-plugin/issues"
   },
-  "homepage": "https://github.com/stevenzeiler/dogecoin-gatewayd-plugin"
+  "main": "lib",
+  "scripts": {
+    "build":        "coffee --bare --compile --output lib src/*.coffee",
+    "prepublish":   "coffee --bare --compile --output lib src/*.coffee",
+    "postpublish":  "rm -rf lib"
+  }
 }
