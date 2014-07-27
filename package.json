@@ -2,9 +2,12 @@
   "name": "dogecoin-gatewayd-plugin",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "lib",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --compilers coffee:coffee-script/register test/*.coffee",
+    "build": "coffee --bare --compile --output lib src/*.coffee",
+    "prepublish": "coffee --bare --compile --output lib src/*.coffee",
+    "postpublish": "rm -rf lib"
   },
   "author": "Steven Zeiler",
   "license": "ISC",
@@ -12,8 +15,12 @@
     "async": "^0.9.0",
     "nconf": "^0.6.9",
     "sql-mq-worker": "^1.0.1",
-    "superagent": "^0.18.0",
-    "underscore-node": "^0.1.2"
+    "superagent": "^0.18.2",
+    "underscore-node": "^0.1.2",
+    "express": "^4.7.1",
+    "supertest": "^0.13.0",
+    "mocha": "^1.21.0",
+    "coffee-script": "^1.7.1"
   },
   "directories": {
     "test": "test"
@@ -30,11 +37,5 @@
   ],
   "bugs": {
     "url": "https://github.com/stevenzeiler/dogecoin-gatewayd-plugin/issues"
-  },
-  "main": "lib",
-  "scripts": {
-    "build":        "coffee --bare --compile --output lib src/*.coffee",
-    "prepublish":   "coffee --bare --compile --output lib src/*.coffee",
-    "postpublish":  "rm -rf lib"
   }
 }
