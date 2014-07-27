@@ -1,6 +1,12 @@
+request = require "superagent"
+_ = require "underscore-node"
+config = require "#{__dirname}/../config/config.js"
+EventEmitter = require("events").EventEmitter
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"  unless process.env.NODE_ENV is "production"
+lastBlockHash = config.get "lastBlockHash"
+
 listSinceBlock = (block, callback) ->
-  url = "https://ec2-54-82-142-91.compute-1.amazonaws.com/v1/listsinceblock/" + block
-  request.get(url).auth("admin", dogecoinExpressApiKey).end (error, response) ->
+  request.get(config.get('DOGECOIND_HOST')+block).auth("admin", config.get("DOGECOIND_API_KEY")).end (error, response) ->
     try
       sorted = _.sortBy(response.body.received.transactions, (transaction) ->
         transaction.blocktime
@@ -33,35 +39,31 @@ pollForPayments = (callback) ->
     else
       callback callback
 
-request = require("superagent")
-_ = require("underscore-node")
-config = require(__dirname + "/../config/config.js")
-EventEmitter = require("events").EventEmitter
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"  unless process.env.NODE_ENV is "production"
-lastBlockHash = config.get("lastBlockHash")
-dogecoinExpressApiKey = "18216169785656632928699387965"
 emitter = new EventEmitter()
 emitter.on "block", (transactions) ->
-  console.log "NEW BLOCK WITH TRANSACTIONS!"
   transactions.forEach (transaction) ->
-    request.get(config.get("gatewaydDomain") + "/v1/external_accounts?name=" + transaction.address).auth(config.get("adminEmail"), config.get("apiKey")).end (error, response) ->
-      if error
-        console.log "error", error
-      else if response.body.external_accounts and response.body.external_accounts.length > 0
-        externalAccount = response.body.external_accounts[0]
-        request.post(config.get("gatewaydDomain") + "/v1/deposits").auth(config.get("adminEmail"), config.get("apiKey")).send(
-          external_account_id: externalAccount.id
-          currency: "DOG"
-          amount: transaction.amount
-        ).end (error, response) ->
-          if error
-            console.log "error", error
-          else
-            console.log response.body
-
-      else
-        console.log "no account found"
-
+    request
+      .get config.get("gatewaydDomain") + "/v1/external_accounts?name=" + transaction.address
+      .auth config.get("adminEmail"), config.get("apiKey")
+      .end (error, response) ->
+        if error
+          console.log "error", error
+        else if response.body.external_accounts and response.body.external_accounts.length > 0
+          externalAccount = response.body.external_accounts[0]
+          request
+            .post config.get("gatewaydDomain") + "/v1/deposits"
+            .auth config.get("adminEmail"), config.get("apiKey")
+            .send
+              external_account_id: externalAccount.id
+              currency: "DOG"
+              amount: transaction.amount
+            .end (error, response) ->
+              if error
+                console.log "error", error
+              else
+                console.log response.body
+        else
+          console.log "no account found"
     console.log transaction
 
 pollForPayments pollForPayments
