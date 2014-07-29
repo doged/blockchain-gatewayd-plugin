@@ -49,4 +49,25 @@ describe "Dogecoin Bridge Router Plugin", ->
         assert.strictEqual response.body.message, 'must be a valid ripple address or ripple name'
         next()
 
+  it "should get a dogecoin bridge given a dogecoin address", (next) ->
+    dogecoinAddress = "D9Vm5YbSL3HL1Ha1Tm6eGdc929thZyhhqy"
+    supertest appServer 
+      .get "/bridge/ripple-to-dogecoin/#{dogecoinAddress}"
+      .expect 200
+      .end (error, response) ->
+        console.log response.body
+        assert.strictEqual response.body.dogecoin.address, dogecoinAddress
+        assert gatewayd.validator.isRippleAddress response.body.ripple.address
+        next()
+
+  it "should get a dogecoin bridge given another dogecoin address", (next) ->
+    dogecoinAddress = "DDNFc5ZH3wj4gnFZgupea2PUTERuZr4P97"
+    supertest appServer 
+      .get "/bridge/ripple-to-dogecoin/#{dogecoinAddress}"
+      .expect 200
+      .end (error, response) ->
+        assert.strictEqual response.body.dogecoin.address, dogecoinAddress
+        assert gatewayd.validator.isRippleAddress response.body.ripple.address
+        next()
+    
 

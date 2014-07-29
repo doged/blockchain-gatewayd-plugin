@@ -22,8 +22,20 @@ describe "Ripple To Dogecoin Bridge", ->
     dogecoinAddress = "DFUVhzpRrmvGwy4ETtkxtsXJagoN1imanZ"
     bridge = new RippleToDogecoinBridge dogecoinAddress, gatewayd
     bridge.getRippleAddress (error, rippleAddress) ->
-      assert not error instanceof Error
+      assert not error
       assert gatewayd.validator.isRippleAddress rippleAddress.address
       assert rippleAddress.tag > 0
       next()
+
+  it "should create an external account for the dogecoin address", (next) ->
+    dogecoinAddress = "DFUVhzpRrmvGwy4ETtkxtsXJagoN1imanZ"
+    bridge = new RippleToDogecoinBridge dogecoinAddress, gatewayd
+    bridge.getRippleAddress (error, rippleAddress) ->
+      gatewayd.data.models.externalAccounts.find({
+        where:
+          name: dogecoinAddress
+      }).complete (error, externalAccount) ->
+        assert externalAccount.id > 0
+        assert.strictEqual externalAccount.name, dogecoinAddress
+        next()
 
