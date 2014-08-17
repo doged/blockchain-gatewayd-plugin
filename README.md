@@ -1,5 +1,25 @@
 ## Dogecoin Gatewayd Plugin
 
+## Installation
+
+    npm install --save blockchain-monitor
+
+## Usage
+
+    const blockchain = require('blockchain-monitor');
+
+    blockchainPoller = new blockchain.Poller({
+      lastBlockHash: config.get('lastBlockHash'),
+      blockchainClient:  new blockchain.Client()
+    });
+
+    blockchainPoller.pollForBlocks(function(block, next) {
+      block.forEach(transaction, function(transaction) {
+        sendTextMessageAlert(transaction);  // do something with the transaction
+      });
+      next(); // proceed to the next block of transactions
+    });
+
 Three unix processes designed to automate the integration between a ripple gateway using gatewayd and a dogecoind server.
 
 - Process 1: `gatewayd_accounts.js`
