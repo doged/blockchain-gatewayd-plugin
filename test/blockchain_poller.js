@@ -1,28 +1,31 @@
-var BlockchainPoller = require(__dirname+'/../lib/blockchain_poller.js');
-var DogecoinClient = require(__dirname+'/../lib/client.js');
+const BlockchainPoller = require(__dirname+'/../lib/blockchain_poller.js');
+const BlockchainClient = require(__dirname+'/../lib/blockchain_client.js');
+const config = require(__dirname+'/../lib/config.js');
 
 describe('Blockchain Poller', function() {
 
   before(function() {
     blockchainPoller = new BlockchainPoller({
-      lastBlockHash: 'someBlockHash',
-      blockchainClient:  new DogecoinClient()
+      lastBlockHash: config.get('lastBlockHash'),
+      blockchainClient:  new BlockchainClient()
     });
   });
 
-  it('accepts a function to call when a block with new transactions is discovered', function() {
+  it('accepts a function to call when a block with new transactions is discovered', function(done) {
   
-    blockchainPoller.pollForBlocks(function(block, next, done) {
-      console.log('NEW BLOCK OF TRANSACTIONS', block);
+    blockchainPoller.pollForBlocks(function(block, next) {
       config.set('lastBlockHash', block.hash);
-      config.save();
       next();
+      done();
     });
   });
 
-  it('should not advance if an error is received', function(block, next) {
-    delete block;
-    next(new Error('AccidentalBlockDeletionError'));
+  it('should not advance if an error is received', function(callback) {
+    blockchainPoller.pollForBlocks(function(block, next, done) {
+      delete block;
+      next(new Error('AccidentalBlockDeletionError'));
+      callback();
+    });
   });
 
   it('#stop should stop the polling behavior', function() {
