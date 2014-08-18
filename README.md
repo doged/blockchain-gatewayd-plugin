@@ -24,18 +24,18 @@ In the Gatewaydfile.js of your gatewayd installation
       }); 
 
       // will mount blockchainPlugin.router at '/blockchain-bridge' in gatewayd.server
+      // will also start 
       gatewayd.plugins.register({
         plugin: blockchainPlugin,
         name: 'blockchain',
         route: '/blockchain-bridge',
+        processes: blockchainPlugin.processes
       });
 
-      // will start the worker process to get new addresses
-      gatewayd.processes.register({
-        newBlockchainAddresses: './node_modules/blockchain-gatewayd-plugin/processes/new_addresses.js'
-      })
+`blockchainPlugin.processes` is an object containg names processes of and paths to
+their file to be executed by pm2.
 
-      ////// node_modules/blockchain-gatewayd-plugin/processes/new_addresses.js
+For instance, in `blockchain-gatewayd-plugin/processes/new_addresses.js`
  
       const gatewayd = require(__dirname+'/../../');
 
