@@ -1,18 +1,27 @@
-## Dogecoin Gatewayd Plugin
+## Blockchain Gatewayd Plugin
 
 ### Installation
 
-    npm install --save dogecoin-gatewayd-plugin
+    npm install --save blockchain-gatewayd-plugin
 
 ### Usage
 
 In the Gatewaydfile.js of your gatewayd installation
 
-      const DogecoinPlugin = require('dogecoin-gatewayd-plugin');
+      const BlockchainPlugin = require('blockchain-gatewayd-plugin');
+      const BlockchainClient = require('blockchain-monitor').Client;
 
-      const dogecoinPlugin = new DogecoinPlugin({
-        gatewayd: gatewayd
+      const blockchainPlugin = new BlockchainPlugin({
+        gatewayd: gatewayd,
+        blockchainClient: new BlockchainClient({
+          host: '127.0.0.1',
+          port: 22555,
+          https: false,
+          user: 'rpcUser',
+          pass: 'rpcPassword',
+          type: 'dogecoin'
+        })
       }); 
 
-      gatewayd.server.use('/', dogecoinPlugin);
+      gatewayd.server.use('/', blockchainPlugin);
 

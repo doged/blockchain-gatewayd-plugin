@@ -1,6 +1,6 @@
 {
-  "name": "dogecoin-gatewayd-plugin",
-  "version": "1.2.0",
+  "name": "blockchain-gatewayd-plugin",
+  "version": "1.2.1",
   "description": "",
   "main": "index.js",
   "scripts": {
