@@ -1,5 +1,5 @@
 assert = require "assert"
-RippleToDogecoinBridge = require "#{__dirname}/../src/ripple_to_dogecoin_bridge"
+RippleToDogecoinBridge = require "#{__dirname}/../lib/ripple_to_dogecoin_bridge"
 gatewayd = require "#{__dirname}/../../../ripple/gatewayd/"
 
 describe "Ripple To Dogecoin Bridge", ->

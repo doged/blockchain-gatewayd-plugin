@@ -1,4 +1,4 @@
-RouterPlugin = require "#{__dirname}/../src/plugin_router"
+RouterPlugin = require "#{__dirname}/../lib/plugin_router"
 supertest = require "supertest"
 express = require "express"
 assert = require "assert"
