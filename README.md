@@ -23,5 +23,21 @@ In the Gatewaydfile.js of your gatewayd installation
         })
       }); 
 
-      gatewayd.server.use('/', blockchainPlugin);
+      // will mount blockchainPlugin.router at '/blockchain-bridge' in gatewayd.server
+      gatewayd.plugins.register({
+        plugin: blockchainPlugin,
+        name: 'blockchain',
+        route: '/blockchain-bridge',
+      });
+
+      // will start the worker process to get new addresses
+      gatewayd.processes.register({
+        newBlockchainAddresses: './node_modules/blockchain-gatewayd-plugin/processes/new_addresses.js'
+      })
+
+      ////// node_modules/blockchain-gatewayd-plugin/processes/new_addresses.js
+ 
+      const gatewayd = require(__dirname+'/../../');
+
+      gatewayd.plugins.blockchain.workers.newAddresses.start();
 
