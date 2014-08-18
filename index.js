@@ -1,4 +1,3 @@
-require('coffee-script/register');
 
-module.exports = require(__dirname+'/src/plugin_router.coffee');
+module.exports = require(__dirname+'/lib/plugin_router.js');
 
