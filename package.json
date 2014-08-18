@@ -4,10 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --compilers coffee:coffee-script/register test/*.coffee",
-    "build": "coffee --bare --compile --output lib src/*.coffee",
-    "prepublish": "coffee --bare --compile --output lib src/*.coffee",
-    "postpublish": "rm -rf lib"
+    "test": "mocha -R spec test/*.js"
   },
   "author": "Steven Zeiler",
   "license": "ISC",
