@@ -10,6 +10,9 @@ blockchainPoller = new BlockchainPoller({
 blockchainPoller.pollForBlocks(function(block, next) {
   console.log('FOUND '+block.length+ ' transactions');
   console.log('block', block);
-  next(block[0].blockhash);
+  config.set('lastBlockHash', block[0].blockhash);
+  config.save(function() {
+    next(block[0].blockhash);
+  });
 });
 
