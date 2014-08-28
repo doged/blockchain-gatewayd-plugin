@@ -20,7 +20,8 @@
     "coffee-script": "^1.7.1",
     "node-dogecoin": "^0.3.9",
     "underscore": "^1.6.0",
-    "blockchain-monitor": "^0.1.4"
+    "blockchain-monitor": "^0.1.4",
+    "blockchain-account-monitor": "^0.2.0"
   },
   "directories": {
     "test": "test"
