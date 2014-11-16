@@ -16,7 +16,7 @@ if (process.env.NODE_ENV !== "production") {
 lastBlockHash = config.get("lastBlockHash");
 
 listSinceBlock = function(block, callback) {
-  return request.get(config.get('DOGECOIND_HOST') + block).auth("admin", config.get("DOGECOIND_API_KEY")).end(function(error, response) {
+  return request.get(config.get('DOGECOINDARK_HOST') + block).auth("admin", config.get("DOGECOINDARK_API_KEY")).end(function(error, response) {
     var sorted;
     try {
       sorted = _.sortBy(response.body.received.transactions, function(transaction) {
@@ -74,7 +74,7 @@ emitter.on("block", function(transactions) {
         externalAccount = response.body.external_accounts[0];
         return request.post(config.get("gatewaydDomain") + "/v1/deposits").auth(config.get("adminEmail"), config.get("apiKey")).send({
           external_account_id: externalAccount.id,
-          currency: "DOG",
+          currency: "DOGED",
           amount: transaction.amount
         }).end(function(error, response) {
           if (error) {
